@@ -240,12 +240,12 @@ function App() {
 
   return (
     <DBContext.Provider value={{ db, setDb: setDbAndSave }}>
-      <div className="max-w-[1600px] mx-auto px-4 lg:px-6 py-4 lg:py-6">
+      <div className="mx-auto px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 md:py-4 lg:py-6" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
         <Header db={db} conn={conn}
                 onTest={() => testConn(false)} onLoad={loadFromCloud}
                 onNav={setRoute} onMenu={() => setMobileOpen(true)} />
-        <div className="grid mt-4 gap-4" style={{ gridTemplateColumns: 'auto 1fr' }}>
-          <div className="hidden lg:block">
+        <div className="grid mt-2 sm:mt-3 md:mt-4 gap-2 sm:gap-3 md:gap-4" style={{ gridTemplateColumns: 'minmax(150px, 200px) 1fr', minWidth: 0 }}>
+          <div className="min-w-0">
             <Sidebar route={route} onNav={setRoute} mobileOpen={false} onCloseMobile={() => {}} />
           </div>
           <main className="min-w-0" key={route}>
@@ -253,13 +253,6 @@ function App() {
           </main>
         </div>
         <Footer />
-        {/* Mobile sidebar overlay */}
-        {mobileOpen && (
-          <div className="lg:hidden fixed inset-0 z-[75]" style={{ background: 'rgba(2,4,15,0.85)' }} onClick={() => setMobileOpen(false)} />
-        )}
-        <div className="lg:hidden">
-          <Sidebar route={route} onNav={setRoute} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
-        </div>
       </div>
     </DBContext.Provider>
   );
