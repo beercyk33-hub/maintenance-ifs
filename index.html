@@ -367,6 +367,24 @@
     width: 100%;
   }
 
+  /* Hide right sidebar on tablet/mobile - responsive layout */
+  .right-sidebar-panel {
+    display: none !important;
+  }
+  @media (min-width: 1024px) {
+    .right-sidebar-panel {
+      display: block !important;
+    }
+  }
+
+  /* Collapse multi-column grids to 1-2 columns on mobile */
+  @media (max-width: 1023px) {
+    /* Hide 3rd column in grids */
+    .grid > :nth-child(3) {
+      display: none;
+    }
+  }
+
   /* Responsive fluid layout - scales down smoothly */
   @media (max-width: 1280px) {
     :root { font-size: 15px; }
