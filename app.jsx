@@ -28,11 +28,11 @@ const NAV = [
   { key: 'admin',        label: 'ส่วนผู้ดูแลระบบ',    icon: 'shield'    },
 ];
 
-const Header = ({ db, conn, onTest, onLoad, onNav, onMenu }) => (
+const Header = ({ db, conn, onTest, onLoad, onNav, onMenu, sidebarCollapsed }) => (
   <div className="glass rounded-3xl px-5 py-4 fade-in">
     <div className="flex items-center gap-3 flex-wrap">
-      <button className="btn btn-ghost btn-sm lg:hidden" onClick={onMenu} aria-label="เมนู">
-        <Icon name="menu" size={18} />
+      <button className="btn btn-ghost btn-sm" onClick={onMenu} aria-label="Toggle sidebar" title="Toggle sidebar">
+        <Icon name={sidebarCollapsed ? "filter" : "close"} size={18} />
       </button>
       <div className="flex items-center gap-3 min-w-0 flex-1">
         <div className="rounded-2xl flex items-center justify-center"
@@ -93,28 +93,32 @@ const ConnDot = ({ conn }) => {
   );
 };
 
-const Sidebar = ({ route, onNav, mobileOpen, onCloseMobile }) => (
+const Sidebar = ({ route, onNav, mobileOpen, onCloseMobile, collapsed = false }) => (
   <>
     {mobileOpen && (
       <div className="lg:hidden fixed inset-0 z-[70]" style={{ background: 'rgba(2,4,15,0.6)' }} onClick={onCloseMobile} />
     )}
     <aside className={'glass rounded-3xl p-3 sidebar-mobile ' + (mobileOpen ? 'open' : '')}
-           style={{ width: 250, position: 'sticky', top: 16, alignSelf: 'flex-start' }}>
+           style={{ width: collapsed ? '70px' : '240px', position: 'sticky', top: 16, alignSelf: 'flex-start', transition: 'width 0.25s ease', overflow: 'hidden' }}>
       <nav className="flex flex-col gap-1">
         {NAV.map(n => (
           <div key={n.key}
                className={'nav-link ' + (route === n.key ? 'active' : '')}
-               onClick={() => { onNav(n.key); onCloseMobile(); }}>
-            <Icon name={n.icon} size={17} />
-            <span>{n.label}</span>
+               onClick={() => { onNav(n.key); onCloseMobile(); }}
+               title={collapsed ? n.label : ''}
+               style={{ justifyContent: collapsed ? 'center' : 'flex-start', transition: 'all 0.25s ease' }}>
+            <Icon name={n.icon} size={17} style={{ flexShrink: 0 }} />
+            {!collapsed && <span style={{ transition: 'opacity 0.25s ease' }}>{n.label}</span>}
           </div>
         ))}
       </nav>
-      <div className="mt-3 pt-3 border-t" style={{ borderColor: 'var(--line)' }}>
-        <div style={{ fontSize: '0.72rem', color: 'var(--ink-faint)', padding: '0 0.5rem' }}>
-          เวอร์ชัน V.1 · ระบบซ่อมบำรุงออนไลน์
+      {!collapsed && (
+        <div className="mt-3 pt-3 border-t" style={{ borderColor: 'var(--line)', transition: 'opacity 0.25s ease' }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--ink-faint)', padding: '0 0.5rem' }}>
+            เวอร์ชัน V.1 · ระบบซ่อมบำรุงออนไลน์
+          </div>
         </div>
-      </div>
+      )}
     </aside>
   </>
 );
@@ -154,6 +158,7 @@ function App() {
   const [route, setRoute] = useStickyState('mifs.route', 'dashboard');
   const [conn, setConn] = React.useState('offline');
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useStickyState('mifs.sidebar-collapsed', window.innerWidth < 768);
   const [adminUnlocked, setAdminUnlocked] = React.useState(false);
 
   // helpers exposed to pages
@@ -238,17 +243,21 @@ function App() {
     default: page = <window.PageDashboard {...props} />;
   }
 
+  const sidebarWidth = sidebarCollapsed ? '70px' : '240px';
+  const gridCols = sidebarCollapsed ? `${sidebarWidth} 1fr` : `${sidebarWidth} 1fr`;
+
   return (
     <DBContext.Provider value={{ db, setDb: setDbAndSave }}>
       <div className="mx-auto px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 md:py-4 lg:py-6" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
         <Header db={db} conn={conn}
                 onTest={() => testConn(false)} onLoad={loadFromCloud}
-                onNav={setRoute} onMenu={() => setMobileOpen(true)} />
-        <div className="grid mt-2 sm:mt-3 md:mt-4 gap-2 sm:gap-3 md:gap-4" style={{ gridTemplateColumns: 'minmax(150px, 200px) 1fr', minWidth: 0 }}>
-          <div className="min-w-0">
-            <Sidebar route={route} onNav={setRoute} mobileOpen={false} onCloseMobile={() => {}} />
+                onNav={setRoute} onMenu={() => setSidebarCollapsed(!sidebarCollapsed)}
+                sidebarCollapsed={sidebarCollapsed} />
+        <div className="mt-2 sm:mt-3 md:mt-4" style={{ display: 'grid', gridTemplateColumns: gridCols, gap: '1rem', minWidth: 0, transition: 'grid-template-columns 0.25s ease' }}>
+          <div style={{ minWidth: 0, transition: 'width 0.25s ease' }}>
+            <Sidebar route={route} onNav={setRoute} mobileOpen={false} onCloseMobile={() => {}} collapsed={sidebarCollapsed} />
           </div>
-          <main className="min-w-0" key={route}>
+          <main style={{ minWidth: 0 }} key={route}>
             <div className="fade-in">{page}</div>
           </main>
         </div>
