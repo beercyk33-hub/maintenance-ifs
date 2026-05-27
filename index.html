@@ -371,6 +371,80 @@
     .sidebar-mobile.open { transform: translateX(0); }
   }
 
+  /* Mobile optimization */
+  @media (max-width: 768px) {
+    :root {
+      font-size: 14px;
+    }
+    .h1 { font-size: 1.4rem; }
+    .h2 { font-size: 1.1rem; }
+    .h3 { font-size: 0.95rem; }
+
+    .btn {
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      min-height: 44px;
+    }
+    .btn-sm {
+      padding: 0.4rem 0.7rem;
+      font-size: 0.8rem;
+      min-height: 40px;
+    }
+
+    .input, .select, .textarea {
+      font-size: 16px;
+      padding: 0.65rem 0.85rem;
+      min-height: 44px;
+    }
+
+    .glass {
+      padding: 1rem;
+    }
+
+    .tbl th, .tbl td {
+      padding: 0.6rem 0.7rem;
+      font-size: 0.82rem;
+    }
+
+    /* Header optimization */
+    .px-5.py-4 {
+      padding: 0.75rem 1rem !important;
+    }
+
+    /* Reduce padding on smaller screens */
+    .px-4.lg\:px-6 {
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+    }
+    .py-4.lg\:py-6 {
+      padding-top: 0.75rem !important;
+      padding-bottom: 0.75rem !important;
+    }
+
+    /* Better touch targets */
+    .nav-link {
+      padding: 0.65rem 0.75rem;
+      min-height: 44px;
+    }
+
+    /* Card spacing */
+    .gap-4 { gap: 0.75rem; }
+    .mt-4 { margin-top: 0.75rem; }
+  }
+
+  @media (max-width: 480px) {
+    .h1 { font-size: 1.25rem; }
+    .h2 { font-size: 1rem; }
+
+    .btn { padding: 0.55rem 0.9rem; font-size: 0.8rem; }
+
+    .glass { padding: 0.85rem; }
+
+    .flex.items-center.gap-3.flex-wrap {
+      gap: 0.5rem;
+    }
+  }
+
   /* Subtle entrance animation */
   .fade-in { animation: fadeUp 0.4s ease; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
