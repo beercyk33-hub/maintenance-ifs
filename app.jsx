@@ -248,14 +248,18 @@ function App() {
           <div className="hidden lg:block">
             <Sidebar route={route} onNav={setRoute} mobileOpen={false} onCloseMobile={() => {}} />
           </div>
-          <div className="block lg:hidden">
-            <Sidebar route={route} onNav={setRoute} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
-          </div>
           <main className="min-w-0" key={route}>
             <div className="fade-in">{page}</div>
           </main>
         </div>
         <Footer />
+        {/* Mobile sidebar overlay */}
+        {mobileOpen && (
+          <div className="lg:hidden fixed inset-0 z-[75]" style={{ background: 'rgba(2,4,15,0.85)' }} onClick={() => setMobileOpen(false)} />
+        )}
+        <div className="lg:hidden">
+          <Sidebar route={route} onNav={setRoute} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
+        </div>
       </div>
     </DBContext.Provider>
   );
